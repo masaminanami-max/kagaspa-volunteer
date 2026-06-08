@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KAGA SPA 100K｜ボランティア多言語カード</title>
+<style>
+  /* オフライン完全対応：Google Fonts不使用 */
+
+  :root {
+    --green: #2d6a4f;
+    --green-light: #52b788;
+    --green-pale: #d8f3dc;
+    --accent: #f77f00;
+    --dark: #1b1b2f;
+    --gray: #f4f4f4;
+    --white: #ffffff;
+    --shadow: 0 4px 20px rgba(0,0,0,0.12);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Yu Gothic", "YuGothic", "Meiryo", "Apple SD Gothic Neo", "Malgun Gothic", "PingFang SC", "PingFang TC", "Microsoft JhengHei", "Microsoft YaHei", sans-serif;
+    background: #eef5f0;
+    min-height: 100vh;
+    padding-bottom: 40px;
+  }
+
+  /* HEADER */
+  header {
+    background: linear-gradient(135deg, var(--green) 0%, #1b4332 100%);
+    color: white;
+    padding: 14px 16px 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: var(--shadow);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .logo-area h1 {
+    font-family: "Arial Black", "Franklin Gothic Heavy", Impact, sans-serif;
+    font-size: 18px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    line-height: 1.1;
+  }
+  .logo-area p {
+    font-size: 10px;
+    opacity: 0.75;
+    letter-spacing: 0.5px;
+  }
+
+  /* LANG BUTTONS */
+  .lang-buttons {
+    display: flex;
+    gap: 5px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+
+  .lang-btn {
+    padding: 5px 9px;
+    border: 1.5px solid rgba(255,255,255,0.4);
+    border-radius: 20px;
+    background: transparent;
+    color: white;
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    letter-spacing: 0.5px;
+  }
+  .lang-btn.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: white;
+  }
+  .lang-btn:hover { background: rgba(255,255,255,0.2); }
+  .lang-btn.active:hover { background: var(--accent); }
+
+  /* TABS */
+  .tabs {
+    display: flex;
+    background: var(--dark);
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .tabs::-webkit-scrollbar { display: none; }
+
+  .tab-btn {
+    flex: 1;
+    min-width: 80px;
+    padding: 10px 6px;
+    border: none;
+    background: transparent;
+    color: rgba(255,255,255,0.5);
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    border-bottom: 3px solid transparent;
+    white-space: nowrap;
+    letter-spacing: 0.3px;
+  }
+  .tab-btn.active {
+    color: var(--green-light);
+    border-bottom-color: var(--green-light);
+    background: rgba(82,183,136,0.08);
+  }
+  .tab-btn:hover { color: white; }
+
+  /* CONTENT */
+  .content {
+    padding: 16px;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  /* PHRASE CARD */
+  .phrase-card {
+    background: white;
+    border-radius: 14px;
+    margin-bottom: 12px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.07);
+    overflow: hidden;
+    transition: transform 0.15s;
+  }
+  .phrase-card:active { transform: scale(0.98); }
+
+  .phrase-card-header {
+    background: var(--green);
+    padding: 8px 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .phrase-card-header .icon { font-size: 16px; }
+  .phrase-card-header .label {
+    color: white;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    opacity: 0.9;
+  }
+
+  .phrase-body {
+    padding: 12px 14px;
+  }
+
+  .phrase-ja {
+    font-size: 13px;
+    color: #555;
+    margin-bottom: 6px;
+    font-weight: 400;
+  }
+
+  .phrase-main {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--dark);
+    line-height: 1.4;
+    margin-bottom: 8px;
+  }
+
+  .phrase-sub {
+    font-size: 13px;
+    color: #888;
+    font-style: italic;
+    margin-bottom: 8px;
+  }
+
+  .copy-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 6px 12px;
+    background: var(--green-pale);
+    color: var(--green);
+    border: none;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .copy-btn:hover { background: var(--green-light); color: white; }
+  .copy-btn.copied { background: var(--accent); color: white; }
+
+  /* SECTION TITLE */
+  .section-title {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--green);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin: 18px 0 8px;
+    padding-left: 4px;
+    border-left: 3px solid var(--green-light);
+    padding-left: 8px;
+  }
+
+  /* EMERGENCY CARD */
+  .emergency-card {
+    background: #fff5f5;
+    border: 2px solid #e63946;
+    border-radius: 14px;
+    padding: 14px;
+    margin-bottom: 12px;
+  }
+  .emergency-card .phrase-main { color: #e63946; }
+  .emergency-card .copy-btn { background: #ffd6d6; color: #e63946; }
+  .emergency-card .copy-btn:hover { background: #e63946; color: white; }
+
+  /* REQUEST FORM */
+  .request-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+
+  .request-chip {
+    background: white;
+    border: 2px solid var(--green-pale);
+    border-radius: 12px;
+    padding: 12px 10px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  }
+  .request-chip:hover, .request-chip.selected {
+    border-color: var(--green-light);
+    background: var(--green-pale);
+  }
+  .request-chip .chip-icon { font-size: 22px; margin-bottom: 4px; }
+  .request-chip .chip-text { font-size: 14px; font-weight: 700; color: var(--dark); }
+  .request-chip .chip-ja { font-size: 10px; color: #888; margin-top: 2px; }
+
+  /* QR SECTION */
+  .qr-section {
+    background: white;
+    border-radius: 14px;
+    padding: 20px;
+    text-align: center;
+    box-shadow: var(--shadow);
+    margin-top: 20px;
+  }
+  .qr-section h3 {
+    font-size: 13px;
+    color: var(--green);
+    margin-bottom: 12px;
+    font-weight: 700;
+  }
+  #qr-canvas {
+    border: 3px solid var(--green-pale);
+    border-radius: 8px;
+  }
+  .qr-url {
+    margin-top: 10px;
+    font-size: 11px;
+    color: #888;
+    word-break: break-all;
+  }
+
+  /* FOOTER */
+  .footer-note {
+    text-align: center;
+    font-size: 10px;
+    color: #aaa;
+    margin-top: 20px;
+    padding: 0 16px;
+  }
+
+  .utmb-badge {
+    display: inline-block;
+    background: var(--dark);
+    color: white;
+    font-family: "Arial Black", "Franklin Gothic Heavy", Impact, sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 4px;
+    letter-spacing: 1px;
+    margin-left: 6px;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo-area">
+    <h1>🏔 KAGA SPA 100K <span class="utmb-badge">UTMB</span></h1>
+    <p>VOLUNTEER COMMUNICATION CARD</p>
+  </div>
+  <div class="lang-buttons">
+    <button class="lang-btn active" onclick="setLang('ja')">JA</button>
+    <button class="lang-btn" onclick="setLang('en')">EN</button>
+    <button class="lang-btn" onclick="setLang('zh')">中文</button>
+    <button class="lang-btn" onclick="setLang('tw')">繁中</button>
+    <button class="lang-btn" onclick="setLang('ko')">한국</button>
+    <button class="lang-btn" onclick="setLang('fr')">FR</button>
+  </div>
+</header>
+
+<div class="tabs">
+  <button class="tab-btn active" onclick="setTab('cheer')">① 応援</button>
+  <button class="tab-btn" onclick="setTab('health')">② 体調不良</button>
+  <button class="tab-btn" onclick="setTab('retire')">③ リタイア</button>
+  <button class="tab-btn" onclick="setTab('request')">④ 要望</button>
+
+</div>
+
+<div class="content">
+
+  <!-- ① 応援 -->
+  <div id="panel-cheer" class="tab-panel active">
+    <div class="section-title">応援メッセージ</div>
+
+    <div class="phrase-card">
+      <div class="phrase-card-header"><span class="icon">🏃</span><span class="label">スタート・通過時</span></div>
+      <div class="phrase-body">
+        <div class="phrase-ja">がんばれ！</div>
+        <div class="phrase-main" id="cheer-1"></div>
+        <button class="copy-btn" onclick="copyText('cheer-1', this)">📋 コピー</button>
+      </div>
+    </div>
+
+    <div class="phrase-card">
+      <div class="phrase-card-header"><span class="icon">💪</span><span class="label">中間地点</span></div>
+      <div class="phrase-body">
+        <div class="phrase-ja">あと少し！最後まで！</div>
+        <div class="phrase-main" id="cheer-2"></div>
+        <button class="copy-btn" onclick="copyText('cheer-2', this)">📋 コピー</button>
+      </div>
+    </div>
+
+    <div class="phrase-card">
+      <div class="phrase-card-header"><span class="icon">🎉</span><span class="label">ゴール・完走</span></div>
+      <div class="phrase-body">
+        <div class="phrase-ja">おめでとう！素晴らしい！</div>
+        <div class="phrase-main" id="cheer-3"></div>
+        <button class="copy-btn" onclick="copyText('cheer-3', this)">📋 コピー</button>
+      </div>
+    </div>
+
+    <div class="phrase-card">
+      <div class="phrase-card-header"><span class="icon">🌙</span><span class="label">夜間・長時間</span></div>
+      <div class="phrase-body">
+        <div class="phrase-ja">夜も応援しています。安全に！</div>
+        <div class="phrase-main" id="cheer-4"></div>
+        <button class="copy-btn" onclick="copyText('cheer-4', this)">📋 コピー</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ② 体調不良 -->
+  <div id="panel-health" class="tab-panel">
+    <div class="section-title">体調確認・対応フレーズ</div>
+
+    <div class="emergency-card">
+      <div class="phrase-ja">⚠️ 具合が悪いですか？</div>
+      <div class="phrase-main" id="health-1"></div>
+      <button class="copy-btn" onclick="copyText('health-1', this)">📋 コピー</button>
+    </div>
+
+    <div class="phrase-card">
+      <div class="phrase-card-header"><span class="icon">🪑</span><span class="label">休憩を勧める</span></div>
+      <div class="phrase-body">
+        <div class="phrase-ja">ここで休んでください</div>
+        <div class="phrase-main" id="health-2"></div>
+        <button class="copy-btn" onclick="copyText('health-2', this)">📋 コピー</button>
+      </div>
+    </div>
+
+    <div class="phrase-card">
+      <div class="phrase-card-header"><span class="icon">💧</span><span class="label">水分・食事</span></div>
+      <div class="phrase-body">
+        <div class="phrase-ja">水・食べ物はいりますか？</div>
+        <div class="phrase-main" id="health-3"></div>
+        <button class="copy-btn" onclick="copyText('health-3', this)">📋 コピー</button>
+      </div>
+    </div>
+
+    <div class="phrase-card">
+      <div class="phrase-card-header"><span class="icon">🏥</span><span class="label">医療スタッフ</span></div>
+      <div class="phrase-body">
+        <div class="phrase-ja">医療スタッフを呼びます</div>
+        <div class="phrase-main" id="health-4"></div>
+        <button class="copy-btn" onclick="copyText('health-4', this)">📋 コピー</button>
+      </div>
+    </div>
+
+    <div class="phrase-card">
+      <div class="phrase-card-header"><span class="icon">🤕</span><span class="label">痛みの確認</span></div>
+      <div class="phrase-body">
+        <div class="phrase-ja">どこが痛みますか？</div>
+        <div class="phrase-main" id="health-5"></div>
+        <button class="copy-btn" onclick="copyText('health-5', this)">📋 コピー</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ③ リタイア -->
+  <div id="panel-retire" class="tab-panel">
+    <div class="section-title">リタイア対応フレーズ</div>
+
+    <div class="phrase-card">
+      <div class="phrase-card-header"><span class="icon">🚩</span><span class="label">意思確認</span></div>
+      <div class="phrase-body">
+        <div class="phrase-ja">レースを続けますか？</div>
+        <div class="phrase-main" id="retire-1"></div>
+        <button class="copy-btn" onclick="copyText('retire-1', this)">📋 コピー</button>
+      </div>
+    </div>
+
+    <div class="phrase-card">
+      <div class="phrase-card-header"><span class="icon">📋</span><span class="label">手続き案内</span></div>
+      <div class="phrase-body">
+        <div class="phrase-ja">リタイアの場合はここで手続きできます</div>
+        <div class="phrase-main" id="retire-2"></div>
+        <button class="copy-btn" onclick="copyText('retire-2', this)">📋 コピー</button>
+      </div>
+    </div>
+
+    <div class="phrase-card">
+      <div class="phrase-card-header"><span class="icon">🪑</span><span class="label">待機案内</span></div>
+      <div class="phrase-body">
+        <div class="phrase-ja">ここでしばらく待っていてください</div>
+        <div class="phrase-main" id="retire-3"></div>
+        <button class="copy-btn" onclick="copyText('retire-3', this)">📋 コピー</button>
+      </div>
+    </div>
+
+    <div class="phrase-card">
+      <div class="phrase-card-header"><span class="icon">💚</span><span class="label">労いの言葉</span></div>
+      <div class="phrase-body">
+        <div class="phrase-ja">よく頑張りました。お疲れ様です</div>
+        <div class="phrase-main" id="retire-4"></div>
+        <button class="copy-btn" onclick="copyText('retire-4', this)">📋 コピー</button>
+      </div>
+    </div>
+
+    <div class="phrase-card">
+      <div class="phrase-card-header"><span class="icon">📛</span><span class="label">ゼッケン確認</span></div>
+      <div class="phrase-body">
+        <div class="phrase-ja">ゼッケン番号を教えてください</div>
+        <div class="phrase-main" id="retire-5"></div>
+        <button class="copy-btn" onclick="copyText('retire-5', this)">📋 コピー</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ④ 要望 -->
+  <div id="panel-request" class="tab-panel">
+    <div class="section-title">選手からの要望チェック</div>
+    <p style="font-size:12px;color:#888;margin-bottom:12px;">タップして選手に見せてください</p>
+
+    <div class="request-grid">
+      <div class="request-chip" onclick="toggleChip(this)">
+        <div class="chip-icon">💧</div>
+        <div class="chip-text" id="req-water"></div>
+        <div class="chip-ja">水・飲み物</div>
+      </div>
+      <div class="request-chip" onclick="toggleChip(this)">
+        <div class="chip-icon">🍌</div>
+        <div class="chip-text" id="req-food"></div>
+        <div class="chip-ja">食べ物</div>
+      </div>
+      <div class="request-chip" onclick="toggleChip(this)">
+        <div class="chip-icon">🔋</div>
+        <div class="chip-text" id="req-charge"></div>
+        <div class="chip-ja">充電</div>
+      </div>
+      <div class="request-chip" onclick="toggleChip(this)">
+        <div class="chip-icon">🧴</div>
+        <div class="chip-text" id="req-cream"></div>
+        <div class="chip-ja">クリーム・薬</div>
+      </div>
+      <div class="request-chip" onclick="toggleChip(this)">
+        <div class="chip-icon">🚽</div>
+        <div class="chip-text" id="req-toilet"></div>
+        <div class="chip-ja">トイレ</div>
+      </div>
+      <div class="request-chip" onclick="toggleChip(this)">
+        <div class="chip-icon">📍</div>
+        <div class="chip-text" id="req-direction"></div>
+        <div class="chip-ja">コース案内</div>
+      </div>
+      <div class="request-chip" onclick="toggleChip(this)">
+        <div class="chip-icon">📞</div>
+        <div class="chip-text" id="req-call"></div>
+        <div class="chip-ja">電話・連絡</div>
+      </div>
+      <div class="request-chip" onclick="toggleChip(this)">
+        <div class="chip-icon">🛌</div>
+        <div class="chip-text" id="req-rest"></div>
+        <div class="chip-ja">休憩</div>
+      </div>
+    </div>
+
+    <div class="phrase-card" style="margin-top:8px;">
+      <div class="phrase-card-header"><span class="icon">🙋</span><span class="label">何か必要ですか？</span></div>
+      <div class="phrase-body">
+        <div class="phrase-main" id="req-need"></div>
+        <button class="copy-btn" onclick="copyText('req-need', this)">📋 コピー</button>
+      </div>
+    </div>
+  </div>
+
+
+
+</div>
+
+<div class="footer-note">
+  KAGA SPA TRAIL 100K｜UTMB World Series<br>
+  Volunteer Communication Card v1.0
+</div>
+
+<script>
+// =================== PHRASES ===================
+const phrases = {
+  cheer: {
+    1: {
+      ja: "がんばれ！",
+      en: "Keep going! You're amazing!",
+      zh: "加油！你太棒了！",
+      tw: "加油！你太棒了！",
+      ko: "힘내세요! 잘하고 있어요!",
+      fr: "Courage ! Tu es formidable !"
+    },
+    2: {
+      ja: "あと少し！最後まで！",
+      en: "Almost there! Keep pushing!",
+      zh: "快到了！继续加油！",
+      tw: "快到了！繼續加油！",
+      ko: "거의 다 왔어요! 끝까지 화이팅!",
+      fr: "Presque arrivé ! Continue !"
+    },
+    3: {
+      ja: "おめでとう！素晴らしい！",
+      en: "Congratulations! Amazing finish!",
+      zh: "恭喜！太厉害了！",
+      tw: "恭喜！太厲害了！",
+      ko: "축하해요! 정말 대단해요!",
+      fr: "Félicitations ! Bravo !"
+    },
+    4: {
+      ja: "夜も応援しています。安全に！",
+      en: "We cheer you through the night! Stay safe!",
+      zh: "我们整夜为你加油！注意安全！",
+      tw: "我們整夜為你加油！注意安全！",
+      ko: "밤새도록 응원합니다! 안전하게!",
+      fr: "On t'encourage toute la nuit ! Reste prudent !"
+    }
+  },
+  health: {
+    1: {
+      ja: "具合が悪いですか？",
+      en: "Are you feeling okay?",
+      zh: "你感觉不舒服吗？",
+      tw: "你感覺不舒服嗎？",
+      ko: "몸이 안 좋으신가요?",
+      fr: "Vous ne vous sentez pas bien ?"
+    },
+    2: {
+      ja: "ここで休んでください",
+      en: "Please rest here.",
+      zh: "请在这里休息。",
+      tw: "請在這裡休息。",
+      ko: "여기서 쉬세요.",
+      fr: "Veuillez vous reposer ici."
+    },
+    3: {
+      ja: "水・食べ物はいりますか？",
+      en: "Do you need water or food?",
+      zh: "你需要水或食物吗？",
+      tw: "你需要水或食物嗎？",
+      ko: "물이나 음식이 필요하신가요?",
+      fr: "Avez-vous besoin d'eau ou de nourriture ?"
+    },
+    4: {
+      ja: "医療スタッフを呼びます",
+      en: "I will call the medical staff.",
+      zh: "我去叫医疗人员。",
+      tw: "我去叫醫療人員。",
+      ko: "의료 스태프를 부르겠습니다.",
+      fr: "Je vais appeler l'équipe médicale."
+    },
+    5: {
+      ja: "どこが痛みますか？",
+      en: "Where does it hurt?",
+      zh: "哪里疼？",
+      tw: "哪裡痛？",
+      ko: "어디가 아프세요?",
+      fr: "Où avez-vous mal ?"
+    }
+  },
+  retire: {
+    1: {
+      ja: "レースを続けますか？",
+      en: "Do you want to continue the race?",
+      zh: "你想继续比赛吗？",
+      tw: "你想繼續比賽嗎？",
+      ko: "레이스를 계속하시겠어요?",
+      fr: "Voulez-vous continuer la course ?"
+    },
+    2: {
+      ja: "リタイアの場合はここで手続きできます",
+      en: "You can retire from the race here.",
+      zh: "如果要退赛，可以在这里办理手续。",
+      tw: "如果要退賽，可以在這裡辦理手續。",
+      ko: "기권하실 경우 여기서 수속하실 수 있습니다.",
+      fr: "Vous pouvez vous retirer de la course ici."
+    },
+    3: {
+      ja: "ここでしばらく待っていてください",
+      en: "Please wait here for a while.",
+      zh: "请在这里稍等一下。",
+      tw: "請在這裡稍等一下。",
+      ko: "여기서 잠시 기다려 주세요.",
+      fr: "Veuillez patienter ici un moment."
+    },
+    4: {
+      ja: "よく頑張りました。お疲れ様です",
+      en: "You did great. Well done!",
+      zh: "你已经很努力了。辛苦了！",
+      tw: "你已經很努力了。辛苦了！",
+      ko: "정말 잘 하셨어요. 수고하셨습니다!",
+      fr: "Vous avez très bien fait. Bravo !"
+    },
+    5: {
+      ja: "ゼッケン番号を教えてください",
+      en: "Please tell me your bib number.",
+      zh: "请告诉我你的号码布号码。",
+      tw: "請告訴我你的號碼布號碼。",
+      ko: "배번 번호를 알려주세요.",
+      fr: "Veuillez me donner votre numéro de dossard."
+    }
+  },
+  request: {
+    water: { ja: "水・飲み物", en: "Water / Drink", zh: "水/饮料", tw: "水/飲料", ko: "물/음료", fr: "Eau / Boisson" },
+    food: { ja: "食べ物", en: "Food", zh: "食物", tw: "食物", ko: "음식", fr: "Nourriture" },
+    charge: { ja: "充電", en: "Charge", zh: "充电", tw: "充電", ko: "충전", fr: "Charge" },
+    cream: { ja: "クリーム・薬", en: "Cream / Medicine", zh: "药膏/药品", tw: "藥膏/藥品", ko: "크림/약", fr: "Crème / Médicament" },
+    toilet: { ja: "トイレ", en: "Toilet", zh: "厕所", tw: "廁所", ko: "화장실", fr: "Toilettes" },
+    direction: { ja: "コース案内", en: "Course Direction", zh: "路线指引", tw: "路線指引", ko: "코스 안내", fr: "Direction du parcours" },
+    call: { ja: "電話・連絡", en: "Phone / Contact", zh: "电话/联系", tw: "電話/聯繫", ko: "전화/연락", fr: "Téléphone / Contact" },
+    rest: { ja: "休憩", en: "Rest", zh: "休息", tw: "休息", ko: "휴식", fr: "Repos" },
+    need: { ja: "何か必要ですか？", en: "What do you need?", zh: "你需要什么？", tw: "你需要什麼？", ko: "무엇이 필요하세요?", fr: "De quoi avez-vous besoin ?" }
+  }
+};
+
+// =================== STATE ===================
+let currentLang = 'ja';
+let currentTab = 'cheer';
+
+// =================== INIT ===================
+function init() {
+  updateAll();
+}
+
+function updateAll() {
+  // Cheer
+  for (let i = 1; i <= 4; i++) {
+    const el = document.getElementById('cheer-' + i);
+    if (el) el.textContent = phrases.cheer[i][currentLang];
+  }
+  // Health
+  for (let i = 1; i <= 5; i++) {
+    const el = document.getElementById('health-' + i);
+    if (el) el.textContent = phrases.health[i][currentLang];
+  }
+  // Retire
+  for (let i = 1; i <= 5; i++) {
+    const el = document.getElementById('retire-' + i);
+    if (el) el.textContent = phrases.retire[i][currentLang];
+  }
+  // Request chips
+  ['water','food','charge','cream','toilet','direction','call','rest'].forEach(key => {
+    const el = document.getElementById('req-' + key);
+    if (el) el.textContent = phrases.request[key][currentLang];
+  });
+  // Request need
+  const needEl = document.getElementById('req-need');
+  if (needEl) needEl.textContent = phrases.request.need[currentLang];
+}
+
+// =================== LANG ===================
+function setLang(lang) {
+  currentLang = lang;
+  document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
+  event.target.classList.add('active');
+  updateAll();
+}
+
+// =================== TAB ===================
+function setTab(tab) {
+  currentTab = tab;
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('panel-' + tab).classList.add('active');
+  event.target.classList.add('active');
+}
+
+// =================== COPY ===================
+function copyText(id, btn) {
+  const text = document.getElementById(id).textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    const orig = btn.textContent;
+    btn.textContent = '✅ コピー完了';
+    btn.classList.add('copied');
+    setTimeout(() => {
+      btn.textContent = orig;
+      btn.classList.remove('copied');
+    }, 1500);
+  }).catch(() => {
+    alert(text);
+  });
+}
+
+// =================== CHIP TOGGLE ===================
+function toggleChip(el) {
+  el.classList.toggle('selected');
+}
+
+window.onload = init;
+</script>
+</body>
+</html>
